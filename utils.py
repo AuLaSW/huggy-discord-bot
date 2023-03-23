@@ -9,9 +9,8 @@ import os
 from dotenv import load_dotenv
 from collections import namedtuple
 import discord
-import pandas as pd
-from pandas import DataFrame as df
 from pathlib import Path
+import sqlite3
 
 
 def load_env_vars(var) -> dict():
@@ -86,53 +85,36 @@ class HugDatabase:
     """
     def __init__(self):
         # folder where "database" is stored
-        self._path = Path('.') / 'db'
-        # guilds information
-        self._guildsPath = self._path / 'guilds.csv'
-        # users information
-        self._usersPath = self._path / 'users.csv'
+        self._folder = Path('.') / 'db'
+        self._path = self._folder / 'hugging.db'
+        
+        if not self._folder.exists():
+            self._folder.mkdir()
+        if not self._path.exists():
+            self._path.touch()
+
+        self._connection = sqlite3.Connection(self._path)
         
         self._setup()
+        
+        self._connection.commit()
+    
+    def __str__(self):
+        cur = self._connection.cursor()
+        
+        res = cur.execute("SELECT * FROM hugs")
+        
+        return str(res.fetchall())
     
     def _setup(self):
-        # if the databases don't exist, create
-        # the folder and files.
-        if not self._path.exists():
-            self._path.mkdir()
-        if not self._guildsPath.exists():
-            self._guildsPath.touch()
-        if not self._usersPath.exists():
-            self._usersPath.touch()
+        cur = self._connection.cursor()
+        res = cur.execute("SELECT name FROM sqlite_master WHERE name='hugs';")
         
-        # if the guilds database exists, load it.
-        # otherwise, create it.
-        try:
-            self._guilds = pd.read_csv(self._guildsPath, header=1)
-        except pd.errors.EmptyDataError:
-            self._guilds = df(
-                columns=[
-                    'GuildID',
-                    'GuildName'
-                ]
+        if res.fetchone() is None:
+            cur.execute("""
+                CREATE TABLE hugs(authorid, guildid, timestamp, huggivento);
+                """
             )
-            # save the dataframe to csv
-            self._guilds.to_csv(self._guildsPath)
-        
-        # If the users database exists, load it.
-        # otherwise, create it.
-        try:
-            self._users = pd.read_csv(self._usersPath, header=1)
-        except pd.errors.EmptyDataError:
-            self._users = df(
-                columns=[
-                    'Author',
-                    'GuildID',
-                    'Timestamp',
-                    'HugGivenTo',
-                ]
-            )
-            # save the dataframe to csv
-            self._users.to_csv(self._usersPath)
         
         """
         Guilds metadata:
@@ -155,6 +137,18 @@ class HugDatabase:
     
     def addHug(self, authorid, guildid, timestamp, huggive=None):
         """Add hug to database"""
+        inputs = [ authorid, guildid, timestamp, huggive ]
+        cur = self._connection.cursor()
+        
+        cur.executemany("""
+            INSERT INTO hugs VALUES
+                (?, ?, ?, ?)
+            """,
+            (inputs,)
+        )
+        
+        self._connection.commit()
+        """
         self._users.loc[len(self._users.index)] = [
             authorid,
             guildid,
@@ -163,6 +157,7 @@ class HugDatabase:
         ]
         
         self._users.to_csv(self._usersPath)
+        """
     
     def addGuild(self, guildid, guildname):
         """Add guild to database"""

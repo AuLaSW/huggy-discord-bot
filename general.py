@@ -20,7 +20,7 @@ async def hug(ctx, *mentions):
     channel = ctx.message.channel
     author = ctx.message.author
     guild = ctx.message.guild
-    date = datetime.now(timezone.utc)
+    date = datetime.now(timezone.utc).timestamp()
     
     db = HugDatabase()
     
@@ -30,7 +30,8 @@ async def hug(ctx, *mentions):
     
     for user in mentions:
         userid = userIDFromMention(user)
-        db.addHug(author.id, guild.id, date, userid)
+        db.addHug(str(author.id), str(guild.id), str(date), str(userid))
+        print(db)
         print("Added hug to database!")
     
     mention = ", ".join(mentions)

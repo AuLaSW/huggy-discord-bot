@@ -17,7 +17,7 @@ def main():
     intentdict["message_content"] = True
     intents = getIntents("default", **intentdict)
     
-    #db = HugDatabase()
+    db = HugDatabase()
     
     bot = Botty2_0(command_prefix="\\", intents=intents)
     #bot.db = db
