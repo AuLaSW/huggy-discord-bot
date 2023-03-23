@@ -20,8 +20,7 @@ def main():
     db = HugDatabase()
     
     bot = Botty2_0(command_prefix="\\", intents=intents)
-    #bot.db = db
-    bot.setup()
+    bot.db = db
     
     bot.run(getToken())
 

@@ -142,31 +142,16 @@ class HugDatabase:
         
         cur.executemany("""
             INSERT INTO hugs VALUES
-                (?, ?, ?, ?)
+                (?, ?, ?, ?);
             """,
             (inputs,)
         )
         
         self._connection.commit()
-        """
-        self._users.loc[len(self._users.index)] = [
-            authorid,
-            guildid,
-            timestamp,
-            huggive,
-        ]
         
-        self._users.to_csv(self._usersPath)
-        """
-    
-    def addGuild(self, guildid, guildname):
-        """Add guild to database"""
-        self._guilds.loc[len(self._users.index)] = [
-            guildid,
-            guildname
-        ]
-        
-        self._guilds.to_csv(self._guildsPath)
+
+class HugETL:
+    pass
 
 
 def getToken():

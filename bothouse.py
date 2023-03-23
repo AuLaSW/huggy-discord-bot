@@ -7,7 +7,7 @@ A module collection of different discord bot skeletons.
 from utils import *
 import discord
 from discord.ext.commands import Bot
-from general import setup as comSetup
+from general import setup
 
 
 class Botty2_0(Bot):
@@ -16,8 +16,5 @@ class Botty2_0(Bot):
     """
     async def on_ready(self):
         print('Initiawizing the commands, uwu...')
-        # setup(self)
-        print(f'{self.user.name} is ready for hot-bot-summer!')
-    
-    def setup(self):
-        comSetup(self)
+        setup(self)
+        print(f'{self.user.name} is weady for hot-bot-summew! >_<')

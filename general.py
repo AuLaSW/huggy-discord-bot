@@ -22,15 +22,13 @@ async def hug(ctx, *mentions):
     guild = ctx.message.guild
     date = datetime.now(timezone.utc).timestamp()
     
-    db = HugDatabase()
-    
     if len(mentions) == 0:
         await channel.send(f"<@{author.id}> I need someone to hug!\nPlease!\nTell me who to hug!\n*shaking* M-my whole existence is hugging!\nWHO DO I HUG?!?!")
         return
     
     for user in mentions:
         userid = userIDFromMention(user)
-        db.addHug(str(author.id), str(guild.id), str(date), str(userid))
+        db.addHug(str(author.id), str(guild.id), date, str(userid))
         print(db)
         print("Added hug to database!")
     
@@ -62,10 +60,10 @@ async def hug(ctx, *mentions):
 def setup(bot):
     """Attaches commands to the incoming bot."""
     print("Adding hugs...")
-    print("Generating hug visuals...")
+    print("Genewating hug visuals...")
     global hugs_visual
     hugs_visual = list(Path('./content/').glob('*.mp4'))
-    for path in hugs_visual:
-        print(path)
-    #db = bot.db
+    print("Accessing the database owo...")
+    global db
+    db = bot.db
     bot.add_command(hug)
