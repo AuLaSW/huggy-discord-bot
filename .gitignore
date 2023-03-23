@@ -1,0 +1,13 @@
+# .gitignore
+
+# ignore the virtual environment
+/venv/*
+
+# ignore the environment variables
+# Uncomment the next line to set this up.
+# Otherwise, you'll share your tokens with everyone
+
+# .env
+
+# ignore any pycaches
+/__pycache__/*
