@@ -11,3 +11,6 @@
 
 # ignore any pycaches
 /__pycache__/*
+
+# ignore the hug databases
+/db/*

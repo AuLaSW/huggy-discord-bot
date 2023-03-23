@@ -9,6 +9,9 @@ import os
 from dotenv import load_dotenv
 from collections import namedtuple
 import discord
+import pandas as pd
+from pandas import DataFrame as df
+from pathlib import Path
 
 
 def load_env_vars(var) -> dict():
@@ -71,6 +74,104 @@ def getIntents(base="none", **kwargs):
             raise e
     
     return intents
+
+
+def userIDFromMention(mention):
+    return mention[2:-1]
+
+
+class HugDatabase:
+    """
+    This class manages the data associated with the discord bot.
+    """
+    def __init__(self):
+        # folder where "database" is stored
+        self._path = Path('.') / 'db'
+        # guilds information
+        self._guildsPath = self._path / 'guilds.csv'
+        # users information
+        self._usersPath = self._path / 'users.csv'
+        
+        self._setup()
+    
+    def _setup(self):
+        # if the databases don't exist, create
+        # the folder and files.
+        if not self._path.exists():
+            self._path.mkdir()
+        if not self._guildsPath.exists():
+            self._guildsPath.touch()
+        if not self._usersPath.exists():
+            self._usersPath.touch()
+        
+        # if the guilds database exists, load it.
+        # otherwise, create it.
+        try:
+            self._guilds = pd.read_csv(self._guildsPath, header=1)
+        except pd.errors.EmptyDataError:
+            self._guilds = df(
+                columns=[
+                    'GuildID',
+                    'GuildName'
+                ]
+            )
+            # save the dataframe to csv
+            self._guilds.to_csv(self._guildsPath)
+        
+        # If the users database exists, load it.
+        # otherwise, create it.
+        try:
+            self._users = pd.read_csv(self._usersPath, header=1)
+        except pd.errors.EmptyDataError:
+            self._users = df(
+                columns=[
+                    'Author',
+                    'GuildID',
+                    'Timestamp',
+                    'HugGivenTo',
+                ]
+            )
+            # save the dataframe to csv
+            self._users.to_csv(self._usersPath)
+        
+        """
+        Guilds metadata:
+        ----------------
+        
+        | GuildID | GuildName |
+        -----------------------
+        | #       | str       |
+        
+        Users metadata:
+        ---------------
+        
+        | Author | GuildID | Timestamp | HugGivenTo |
+        ---------------------------------------------
+        | str    | GuildID | UTC-time  | UserID     |
+        """
+    
+    def _ETL(self):
+        raise NotImplementedError("ETL not yet implemented")
+    
+    def addHug(self, authorid, guildid, timestamp, huggive=None):
+        """Add hug to database"""
+        self._users.loc[len(self._users.index)] = [
+            authorid,
+            guildid,
+            timestamp,
+            huggive,
+        ]
+        
+        self._users.to_csv(self._usersPath)
+    
+    def addGuild(self, guildid, guildname):
+        """Add guild to database"""
+        self._guilds.loc[len(self._users.index)] = [
+            guildid,
+            guildname
+        ]
+        
+        self._guilds.to_csv(self._guildsPath)
 
 
 def getToken():

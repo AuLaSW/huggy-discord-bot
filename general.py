@@ -11,17 +11,27 @@ import random
 from pathlib import Path
 from discord.ext import commands
 import discord
-
+from datetime import datetime, timezone
+from utils import *
 
 
 @commands.command()
 async def hug(ctx, *mentions):
     channel = ctx.message.channel
     author = ctx.message.author
+    guild = ctx.message.guild
+    date = datetime.now(timezone.utc)
+    
+    db = HugDatabase()
     
     if len(mentions) == 0:
         await channel.send(f"<@{author.id}> I need someone to hug!\nPlease!\nTell me who to hug!\n*shaking* M-my whole existence is hugging!\nWHO DO I HUG?!?!")
         return
+    
+    for user in mentions:
+        userid = userIDFromMention(user)
+        db.addHug(author.id, guild.id, date, userid)
+        print("Added hug to database!")
     
     mention = ", ".join(mentions)
     
@@ -61,4 +71,5 @@ def setup(bot):
     hugs_visual = list(Path('./content/').glob('*.mp4'))
     for path in hugs_visual:
         print(path)
+    #db = bot.db
     bot.add_command(hug)
