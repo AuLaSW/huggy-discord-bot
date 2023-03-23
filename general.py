@@ -22,8 +22,20 @@ async def hug(ctx, *mentions):
     if len(mentions) == 0:
         await channel.send(f"<@{author.id}> I need someone to hug!\nPlease!\nTell me who to hug!\n*shaking* M-my whole existence is hugging!\nWHO DO I HUG?!?!")
         return
+    
+    mention = ", ".join(mentions)
+    
+    """
+    for mention in mentions:
+        print(mention[2:-1])
+    """
 
-    mention = " ".join(mentions)
+    if len(mentions) > 1:
+        mention = mention.rpartition(",")
+        if len(mentions) == 2:
+            mention = mention[0] + " and" + mention[2]
+        else:
+            mention = mention[0] + mention[1] + " and" + mention[2]
     
     hugs_text = [
         "I bet you needed that today!",
