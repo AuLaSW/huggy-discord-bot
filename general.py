@@ -40,12 +40,7 @@ async def hug(ctx, *mentions):
         print(mention[2:-1])
     """
 
-    if len(mentions) > 1:
-        mention = mention.rpartition(",")
-        if len(mentions) == 2:
-            mention = mention[0] + " and" + mention[2]
-        else:
-            mention = mention[0] + mention[1] + " and" + mention[2]
+    mention = " ".join(mentions)
     
     hugs_text = [
         "I bet you needed that today!",
