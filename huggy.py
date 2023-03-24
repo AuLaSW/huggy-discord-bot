@@ -10,18 +10,18 @@ from bothouse import Botty2_0
 
 def main():
     var = {}
-    
+
     load_env_vars(var)
 
     intentdict = {}
     intentdict["message_content"] = True
     intents = getIntents("default", **intentdict)
-    
+
     db = HugDatabase()
-    
+
     bot = Botty2_0(command_prefix="\\", intents=intents)
     bot.db = db
-    
+
     bot.run(getToken())
 
 

@@ -21,36 +21,37 @@ async def hug(ctx, *mentions):
     author = ctx.message.author
     guild = ctx.message.guild
     date = datetime.now(timezone.utc).timestamp()
-    
+
     if len(mentions) == 0:
         await channel.send(f"<@{author.id}> I need someone to hug!\nPlease!\nTell me who to hug!\n*shaking* M-my whole existence is hugging!\nWHO DO I HUG?!?!")
         return
-    
+
     for user in mentions:
         userid = userIDFromMention(user)
         db.addHug(str(author.id), str(guild.id), date, str(userid))
         print("Added hug to database!")
-    
+        # hugged.append(db.getUserHug(str(userid), str(guild.id))
+
     """
     for mention in mentions:
         print(mention[2:-1])
     """
     mention = ", ".join(mentions)
-    
+
     hugs_text = [
         "I bet you needed that today!",
         "Aww, come on in!",
         "*licks your ear*",
         "I don't know what you're wearing, but it smells great!",
-        "It's okay, I'm here for you.", 
+        "It's okay, I'm here for you.",
         "I hope your day gets better."
     ]
-    
+
     hug_text = random.choice(hugs_text)
-    
+
     with random.choice(hugs_visual) as hug_visual:
         file = discord.File(fp=hug_visual)
-        await channel.send(f"<@{author.id}> gave {mention} a hug! {hug_text}", file=file)
+        await channel.send(f"<@{author.id}> gave {mention} a hug! {hug_text}\n{hugged}", file=file)
 
 
 @commands.command()
@@ -63,7 +64,6 @@ async def hugsgiven(ctx):
         text += line
 
     await ctx.message.channel.send(text)
-        
 
 
 def setup(bot):
