@@ -29,17 +29,13 @@ async def hug(ctx, *mentions):
     for user in mentions:
         userid = userIDFromMention(user)
         db.addHug(str(author.id), str(guild.id), date, str(userid))
-        print(db)
         print("Added hug to database!")
-    
-    mention = ", ".join(mentions)
     
     """
     for mention in mentions:
         print(mention[2:-1])
     """
-
-    mention = " ".join(mentions)
+    mention = ", ".join(mentions)
     
     hugs_text = [
         "I bet you needed that today!",
@@ -57,6 +53,19 @@ async def hug(ctx, *mentions):
         await channel.send(f"<@{author.id}> gave {mention} a hug! {hug_text}", file=file)
 
 
+@commands.command()
+async def hugsgiven(ctx):
+    text = "The Hug Leaderboard:\n\n"
+    table = db.getGuildHugs(str(ctx.message.guild.id))
+
+    for entry in table:
+        line = f'<@{entry[0]}> has {entry[1]} hugs!\n'
+        text += line
+
+    await ctx.message.channel.send(text)
+        
+
+
 def setup(bot):
     """Attaches commands to the incoming bot."""
     print("Adding hugs...")
@@ -67,3 +76,5 @@ def setup(bot):
     global db
     db = bot.db
     bot.add_command(hug)
+    print("Counting the hugs...")
+    bot.add_command(hugsgiven)

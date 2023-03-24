@@ -148,7 +148,35 @@ class HugDatabase:
         )
         
         self._connection.commit()
+    
+    def getUserHugs(self, userid, guildid):
+        """Get count of hugs that a user has had over complete time"""
+        inputs = [ userid, guildid ]
+        cur = self._connection.cursor()
         
+        query = """
+            SELECT huggivento, COUNT(huggivento) FROM hugs
+            GROUP BY huggivento;
+            """
+        
+        cur.execute(query)
+        
+        return cur.fetchall()
+    
+    def getGuildHugs(self, guildid):
+        """Get count of hugs that a user has had over complete time"""
+        inputs = [ guildid ]
+        cur = self._connection.cursor()
+        
+        query = f"""
+            SELECT huggivento, COUNT(huggivento) FROM hugs
+            WHERE guildid LIKE {guildid}
+            GROUP BY huggivento;
+            """
+        
+        cur.execute(query)
+        
+        return cur.fetchall()
 
 class HugETL:
     pass
