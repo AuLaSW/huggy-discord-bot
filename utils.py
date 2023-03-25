@@ -120,15 +120,15 @@ class HugDatabase:
         """
         Guilds metadata:
         ----------------
-        
+
         | GuildID | GuildName |
         -----------------------
         | #       | str       |
-        
+
         Users metadata:
         ---------------
-        
-        | Author | GuildID | Timestamp | HugGivenTo |
+
+        | AuthorId | GuildID | Timestamp | HugGivenTo |
         ---------------------------------------------
         | str    | GuildID | UTC-time  | UserID     |
         """
@@ -152,15 +152,34 @@ class HugDatabase:
 
     def getUserHugs(self, userid, guildid):
         """Get count of hugs that a user has had over complete time"""
-        inputs = [userid, guildid]
+        inputs = [guildid, userid]
         cur = self._connection.cursor()
 
         query = """
-            SELECT huggivento, COUNT(huggivento) FROM hugs
+            SELECT COUNT(huggivento) FROM hugs
+            WHERE guildid LIKE ?
+            AND huggivento LIKE ?
             GROUP BY huggivento;
             """
 
-        cur.execute(query)
+        cur.execute(query, inputs)
+
+        return cur.fetchall()
+
+    def getUserHugLinks(self, authorid, userid, guildid):
+        """Get the count of hugs from author to user"""
+        inputs = [guildid, authorid, userid]
+        cur = self._connection.cursor()
+
+        query = """
+            SELECT COUNT(huggivento) FROM hugs
+            WHERE guildid LIKE ?
+            AND authorid LIKE ?
+            AND huggivento LIKE ?
+            GROUP BY authorid;
+            """
+
+        cur.execute(query, inputs)
 
         return cur.fetchall()
 
