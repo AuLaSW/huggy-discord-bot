@@ -16,7 +16,10 @@
 /db/*
 
 # ignore the shell scripts 
-*.sh
+/.scripts/*
 
 # ignore the nohup file
 nohup.out
+
+# ignore the .pid file
+.pid
