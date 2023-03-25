@@ -47,7 +47,7 @@ async def hug(ctx, *mentions):
         hugged = db.getUserHugs(str(userid), str(guild.id))[0][0]
 
         if hugged == 1:
-            text += f"\n{user} has been hugged {hugged} time!"
+            text += f"\n{user} has been hugged 1 time!"
         else:
             text += f"\n{user} has been hugged {hugged} times!"
 
@@ -124,15 +124,15 @@ async def hugsto(ctx, *mentions):
         try:
             hugs = db.getUserHugLinks(str(author.id), str(userid), str(guild.id))[0][0]
         except IndexError:
-            await channel.send(f"Not hugs given to <@{userid}>")
+            await channel.send(f"No hugs given to <@{userid}>.")
             return
 
         if hugs is None:
-            hugs = "no"
+            hugs = "no hugs"
         elif hugs == 1:
             hugs = "1 hug"
         else:
-            hugs = f"{hugs} hugs!"
+            hugs = f"{hugs} hugs"
 
         text += f"<@{author.id}> has given {user} {hugs}!\n"
 
