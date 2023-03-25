@@ -14,3 +14,6 @@
 
 # ignore the hug databases
 /db/*
+
+# ignore the shell script for running
+huggy.sh
