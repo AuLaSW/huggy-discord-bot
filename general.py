@@ -80,7 +80,7 @@ async def hug(ctx, *mentions):
     brief="leaderboard of all hugs",
     description="A leaderboard of all hugs given in the server",
 )
-async def hugsgiven(ctx):
+async def hugboard(ctx):
     channel = ctx.message.channel
     guild = ctx.message.guild
     text = "The Hug Leaderboard:\n\n"
@@ -156,7 +156,7 @@ def setup(bot):
     bot.add_command(hug)
 
     print("Counting the hugs...")
-    bot.add_command(hugsgiven)
+    bot.add_command(hugboard)
 
     print("Counting intew hugs to evewyone >,> ...")
     bot.add_command(hugsto)
