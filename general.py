@@ -122,6 +122,8 @@ def setup(bot):
     print("Genewating hug visuals...")
     global hugs_visual
     hugs_visual = list(Path('./content/').glob('*.mp4'))
+    for hugs in hugs_visual:
+        print(str(hugs))
 
     print("Accessing the database owo...")
     global db
