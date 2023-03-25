@@ -22,6 +22,10 @@ from utils import *
 )
 async def hug(ctx, *mentions):
     channel = ctx.message.channel
+
+    if channel not in channels:
+        return
+
     author = ctx.message.author
     guild = ctx.message.guild
     date = datetime.now(timezone.utc).timestamp()
@@ -83,6 +87,10 @@ async def hug(ctx, *mentions):
 async def hugboard(ctx):
     channel = ctx.message.channel
     guild = ctx.message.guild
+
+    if channel not in channels:
+        return
+
     text = "The Hug Leaderboard:\n\n"
     table = db.getGuildHugs(str(guild.id))
 
@@ -111,10 +119,14 @@ async def hugboard(ctx):
     usage="mentions: all users to check for hugs from author"
 )
 async def hugsto(ctx, *mentions):
-    if len(mentions) == 0:
-        await channel.send(f"<@{author.id}> I can't find hugs for no one!")
-
     channel = ctx.message.channel
+
+    if len(mentions) == 0:
+        await channel.send(f"<@{author.id}> I can't find hugs for no-one!")
+
+    if channel not in channels:
+        return
+
     author = ctx.message.author
     guild = ctx.message.guild
     text = ""
@@ -142,6 +154,14 @@ async def hugsto(ctx, *mentions):
 def setup(bot):
     """Attaches commands to the incoming bot."""
     print("Adding hugs...")
+
+    print("Listening to channels...")
+    global channels
+
+    # a list of channels to listen to
+    channels = [
+        "bot-commands"
+    ]
 
     print("Genewating hug visuals...")
     global hugs_visual
