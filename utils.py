@@ -86,7 +86,8 @@ class HugDatabase:
 
     def __init__(self):
         # folder where "database" is stored
-        self._folder = Path('.') / 'db'
+        # self._folder = Path('.') / 'db'
+        self._folder = Path(__file__).parent / 'db'
         self._path = self._folder / 'hugging.db'
 
         if not self._folder.exists():
