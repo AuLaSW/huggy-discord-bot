@@ -23,7 +23,7 @@ from utils import *
 async def hug(ctx, *mentions):
     channel = ctx.message.channel
 
-    if channel not in channels:
+    if channel.name not in channels:
         return
 
     author = ctx.message.author
@@ -88,7 +88,7 @@ async def hugboard(ctx):
     channel = ctx.message.channel
     guild = ctx.message.guild
 
-    if channel not in channels:
+    if channel.name not in channels:
         return
 
     text = "The Hug Leaderboard:\n\n"
@@ -124,7 +124,7 @@ async def hugsto(ctx, *mentions):
     if len(mentions) == 0:
         await channel.send(f"<@{author.id}> I can't find hugs for no-one!")
 
-    if channel not in channels:
+    if channel.name not in channels:
         return
 
     author = ctx.message.author
