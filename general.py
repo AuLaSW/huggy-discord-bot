@@ -27,9 +27,17 @@ async def hug(ctx, *mentions):
     date = datetime.now(timezone.utc).timestamp()
     text = ""
 
+    mention = ", ".join(mentions)
+
     if len(mentions) == 0:
         await channel.send(f"<@{author.id}> I need someone to hug!\nPlease!\nTell me who to hug!\n*shaking* M-my whole existence is hugging!\nWHO DO I HUG?!?!")
         return
+    elif len(mentions) == 2:
+        temp = mention.rpartition(",")
+        mention = temp[0] + " and" + temp[2]
+    elif len(mentions) >= 3:
+        temp = mention.rpartition(",")
+        mention = temp[0] + temp[1] + " and" + temp[2]
 
     for user in mentions:
         userid = userIDFromMention(user)
@@ -38,14 +46,16 @@ async def hug(ctx, *mentions):
 
         hugged = db.getUserHugs(str(userid), str(guild.id))[0][0]
 
-        text += f"\n{user} has been hugged {hugged} times!"
+        if hugged == 1:
+            text += f"\n{user} has been hugged {hugged} time!"
+        else:
+            text += f"\n{user} has been hugged {hugged} times!"
 
 
     """
     for mention in mentions:
         print(mention[2:-1])
     """
-    mention = ", ".join(mentions)
 
     hugs_text = [
         "I bet you needed that today!",
@@ -75,6 +85,10 @@ async def hugsgiven(ctx):
     guild = ctx.message.guild
     text = "The Hug Leaderboard:\n\n"
     table = db.getGuildHugs(str(guild.id))
+
+    if len(table) == 0:
+        await channel.send("No hugs have been given yet!")
+        return
 
     for entry in table:
         if entry[1] == 0:
@@ -107,10 +121,20 @@ async def hugsto(ctx, *mentions):
 
     for user in mentions:
         userid = userIDFromMention(user)
-        hugs = db.getUserHugLinks(str(author.id), str(userid), str(guild.id))[0][0]
+        try:
+            hugs = db.getUserHugLinks(str(author.id), str(userid), str(guild.id))[0][0]
+        except IndexError:
+            await channel.send(f"Not hugs given to <@{userid}>")
+            return
+
         if hugs is None:
             hugs = "no"
-        text += f"\n<@{author.id}> has given {user} {hugs} hugs!"
+        elif hugs == 1:
+            hugs = "1 hug"
+        else:
+            hugs = f"{hugs} hugs!"
+
+        text += f"<@{author.id}> has given {user} {hugs}!\n"
 
     await channel.send(text)
 
