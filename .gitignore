@@ -15,8 +15,8 @@
 # ignore the hug databases
 /db/*
 
-# ignore the shell script for running
-huggy.sh
+# ignore the shell scripts 
+*.sh
 
 # ignore the nohup file
 nohup.out
