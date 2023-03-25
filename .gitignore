@@ -15,8 +15,11 @@
 # ignore the hug databases
 /db/*
 
-# ignore the shell script for running
-huggy.sh
+# ignore the shell scripts 
+/.scripts/*
 
 # ignore the nohup file
 nohup.out
+
+# ignore the .pid file
+.pid
