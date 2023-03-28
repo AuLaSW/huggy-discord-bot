@@ -9,6 +9,7 @@ import os
 from dotenv import load_dotenv
 from collections import namedtuple
 import discord
+from database import *
 
 
 
