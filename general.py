@@ -34,7 +34,7 @@ async def hug(ctx, *mentions):
     mention = ", ".join(mentions)
 
     if len(mentions) == 0:
-        await channel.send(f"<@{author.id}> I need someone to hug!\nPlease!\nTell me who to hug!\n*shaking* M-my whole existence is hugging!\nWHO DO I HUG?!?!")
+        await ctx.send(f"<@{author.id}> I need someone to hug!\nPlease!\nTell me who to hug!\n*shaking* M-my whole existence is hugging!\nWHO DO I HUG?!?!")
         return
     elif len(mentions) == 2:
         temp = mention.rpartition(",")
@@ -95,7 +95,7 @@ async def hugboard(ctx):
     table = db.getGuildHugs(str(guild.id))
 
     if len(table) == 0:
-        await channel.send("No hugs have been given yet!")
+        await ctx.send("No hugs have been given yet!")
         return
 
     for entry in table:
@@ -136,7 +136,7 @@ async def hugsto(ctx, *mentions):
         try:
             hugs = db.getUserHugLinks(str(author.id), str(userid), str(guild.id))[0][0]
         except IndexError:
-            await channel.send(f"No hugs given to <@{userid}>.")
+            await ctx.send(f"No hugs given to <@{userid}>.")
             return
 
         if hugs is None:
