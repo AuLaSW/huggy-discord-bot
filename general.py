@@ -21,13 +21,13 @@ from utils import *
     usage="mentions: All @'s after the command"
 )
 async def hug(ctx, *mentions):
-    channel = ctx.message.channel
+    channel = ctx.channel
 
     if channel.name not in channels:
         return
 
-    author = ctx.message.author
-    guild = ctx.message.guild
+    author = ctx.author
+    guild = ctx.guild
     date = datetime.now(timezone.utc).timestamp()
     text = ""
 
@@ -74,7 +74,7 @@ async def hug(ctx, *mentions):
 
     with random.choice(hugs_visual) as hug_visual:
         file = discord.File(fp=hug_visual)
-        await channel.send(
+        await ctx.send(
             f"<@{author.id}> gave {mention} a hug! {hug_text}\n{text}",
             file=file
         )
@@ -85,8 +85,8 @@ async def hug(ctx, *mentions):
     description="A leaderboard of all hugs given in the server",
 )
 async def hugboard(ctx):
-    channel = ctx.message.channel
-    guild = ctx.message.guild
+    channel = ctx.channel
+    guild = ctx.guild
 
     if channel.name not in channels:
         return
@@ -110,7 +110,7 @@ async def hugboard(ctx):
             line = f'<@{entry[0]}> has {entry[1]} hugs! Wow! :O\n'
         text += line
 
-    await channel.send(text)
+    await ctx.send(text)
 
 
 @commands.command(
@@ -119,16 +119,16 @@ async def hugboard(ctx):
     usage="mentions: all users to check for hugs from author"
 )
 async def hugsto(ctx, *mentions):
-    channel = ctx.message.channel
+    channel = ctx.channel
 
     if len(mentions) == 0:
-        await channel.send(f"<@{author.id}> I can't find hugs for no-one!")
+        await ctx.send(f"<@{author.id}> I can't find hugs for no-one!")
 
     if channel.name not in channels:
         return
 
-    author = ctx.message.author
-    guild = ctx.message.guild
+    author = ctx.author
+    guild = ctx.guild
     text = ""
 
     for user in mentions:
@@ -148,7 +148,7 @@ async def hugsto(ctx, *mentions):
 
         text += f"<@{author.id}> has given {user} {hugs}!\n"
 
-    await channel.send(text)
+    await ctx.send(text)
 
 
 def setup(bot):
