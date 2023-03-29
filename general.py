@@ -22,7 +22,9 @@ from utils import *
     usage="mentions: All @'s after the command"
 )
 """
-@app_commands.command()
+@app_commands.command
+    description="Give someone a hug!"
+)
 async def hug(ctx: discord.Interaction, mentions: discord.User):
     channel = ctx.channel
 
@@ -88,7 +90,9 @@ async def hug(ctx: discord.Interaction, mentions: discord.User):
     description="A leaderboard of all hugs given in the server",
 )
 """
-@app_commands.command()
+@app_commands.command(
+    description="The leaderboard of hugs."
+)
 async def hugboard(ctx: discord.Interaction):
     channel = ctx.channel
     guild = ctx.guild
@@ -124,7 +128,9 @@ async def hugboard(ctx: discord.Interaction):
     usage="mentions: all users to check for hugs from author"
 )
 """
-@app_commands.command()
+@app_commands.command(
+    description="How many hugs author has given user"
+)
 async def hugsto(ctx: discord.Interaction, mentions: discord.User):
     channel = ctx.channel
 
