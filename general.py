@@ -15,13 +15,7 @@ import discord
 from datetime import datetime, timezone
 from utils import *
 
-"""
-@commands.command(
-    brief="Add a hug to @'d",
-    description="Add a hug to all @'d members",
-    usage="user: All @'s after the command"
-)
-"""
+
 @app_commands.command(
     description="Give someone a hug!"
 )
@@ -35,19 +29,6 @@ async def hug(ctx: discord.Interaction, user: discord.User):
     guild = ctx.guild
     date = datetime.now(timezone.utc).timestamp()
     text = ""
-
-    # mention = ", ".join(user)
-    """
-    if len(user) == 0:
-        await ctx.response.send_message(f"<@{author.id}> I need someone to hug!\nPlease!\nTell me who to hug!\n*shaking* M-my whole existence is hugging!\nWHO DO I HUG?!?!")
-        return
-    elif len(user) == 2:
-        temp = mention.rpartition(",")
-        mention = temp[0] + " and" + temp[2]
-    elif len(user) >= 3:
-        temp = mention.rpartition(",")
-        mention = temp[0] + temp[1] + " and" + temp[2]
-    """
 
     db.addHug(str(author.id), str(guild.id), date, str(user.id))
     print("Added hug to database!")
@@ -77,12 +58,7 @@ async def hug(ctx: discord.Interaction, user: discord.User):
             file=file
         )
 
-"""
-@commands.command(
-    brief="leaderboard of all hugs",
-    description="A leaderboard of all hugs given in the server",
-)
-"""
+
 @app_commands.command(
     description="The leaderboard of hugs."
 )
@@ -114,13 +90,7 @@ async def hugboard(ctx: discord.Interaction):
 
     await ctx.response.send_message(text)
 
-"""
-@commands.command(
-    brief="hugs of @'d users from author",
-    description="Gets the hugs of @'d users from author",
-    usage="user: all users to check for hugs from author"
-)
-"""
+
 @app_commands.command(
     description="How many hugs author has given user"
 )
@@ -133,11 +103,6 @@ async def hugsto(ctx: discord.Interaction, user: discord.User):
 )
 async def hugsbetween(ctx: discord.Interaction, user1: discord.User, user2: discord.User):
     channel = ctx.channel
-
-    """
-    if len(user2) == 0:
-        await ctx.response.send_message(f"<@{user1.id}> I can't find hugs for no-one!")
-    """
 
     if channel.name not in channels:
         return
