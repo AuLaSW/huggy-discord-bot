@@ -19,52 +19,45 @@ from utils import *
 @commands.command(
     brief="Add a hug to @'d",
     description="Add a hug to all @'d members",
-    usage="mentions: All @'s after the command"
+    usage="user: All @'s after the command"
 )
 """
-@app_commands.command
+@app_commands.command(
     description="Give someone a hug!"
 )
-async def hug(ctx: discord.Interaction, mentions: discord.User):
+async def hug(ctx: discord.Interaction, user: discord.User):
     channel = ctx.channel
 
     if channel.name not in channels:
         return
 
-    author = ctx.author
+    author = ctx.user
     guild = ctx.guild
     date = datetime.now(timezone.utc).timestamp()
     text = ""
 
-    mention = ", ".join(mentions)
-
-    if len(mentions) == 0:
-        await ctx.send(f"<@{author.id}> I need someone to hug!\nPlease!\nTell me who to hug!\n*shaking* M-my whole existence is hugging!\nWHO DO I HUG?!?!")
+    # mention = ", ".join(user)
+    """
+    if len(user) == 0:
+        await ctx.response.send_message(f"<@{author.id}> I need someone to hug!\nPlease!\nTell me who to hug!\n*shaking* M-my whole existence is hugging!\nWHO DO I HUG?!?!")
         return
-    elif len(mentions) == 2:
+    elif len(user) == 2:
         temp = mention.rpartition(",")
         mention = temp[0] + " and" + temp[2]
-    elif len(mentions) >= 3:
+    elif len(user) >= 3:
         temp = mention.rpartition(",")
         mention = temp[0] + temp[1] + " and" + temp[2]
-
-    for user in mentions:
-        userid = userIDFromMention(user)
-        db.addHug(str(author.id), str(guild.id), date, str(userid))
-        print("Added hug to database!")
-
-        hugged = db.getUserHugs(str(userid), str(guild.id))[0][0]
-
-        if hugged == 1:
-            text += f"\n{user} has been hugged 1 time!"
-        else:
-            text += f"\n{user} has been hugged {hugged} times!"
-
-
     """
-    for mention in mentions:
-        print(mention[2:-1])
-    """
+
+    db.addHug(str(author.id), str(guild.id), date, str(user.id))
+    print("Added hug to database!")
+
+    hugged = db.getUserHugs(str(user.id), str(guild.id))[0][0]
+
+    if hugged == 1:
+        text += f"\n{user.mention} has been hugged 1 time!"
+    else:
+        text += f"\n{user.mention} has been hugged {hugged} times!"
 
     hugs_text = [
         "I bet you needed that today!",
@@ -79,8 +72,8 @@ async def hug(ctx: discord.Interaction, mentions: discord.User):
 
     with random.choice(hugs_visual) as hug_visual:
         file = discord.File(fp=hug_visual)
-        await ctx.send(
-            f"<@{author.id}> gave {mention} a hug! {hug_text}\n{text}",
+        await ctx.response.send_message(
+            f"<@{author.id}> gave {user.mention} a hug! {hug_text}\n{text}",
             file=file
         )
 
@@ -104,7 +97,7 @@ async def hugboard(ctx: discord.Interaction):
     table = db.getGuildHugs(str(guild.id))
 
     if len(table) == 0:
-        await ctx.send("No hugs have been given yet!")
+        await ctx.response.send_message("No hugs have been given yet!")
         return
 
     for entry in table:
@@ -119,49 +112,55 @@ async def hugboard(ctx: discord.Interaction):
             line = f'<@{entry[0]}> has {entry[1]} hugs! Wow! :O\n'
         text += line
 
-    await ctx.send(text)
+    await ctx.response.send_message(text)
 
 """
 @commands.command(
     brief="hugs of @'d users from author",
     description="Gets the hugs of @'d users from author",
-    usage="mentions: all users to check for hugs from author"
+    usage="user: all users to check for hugs from author"
 )
 """
 @app_commands.command(
     description="How many hugs author has given user"
 )
-async def hugsto(ctx: discord.Interaction, mentions: discord.User):
+async def hugsto(ctx: discord.Interaction, user: discord.User):
+    hugsbetween(ctx, ctx.user, user)
+    
+    
+@app_commands.command(
+    description="How many hugs between users"
+)
+async def hugsbetween(ctx: discord.Interaction, user1: discord.User, user2: discord.User):
     channel = ctx.channel
 
-    if len(mentions) == 0:
-        await ctx.send(f"<@{author.id}> I can't find hugs for no-one!")
+    """
+    if len(user2) == 0:
+        await ctx.response.send_message(f"<@{user1.id}> I can't find hugs for no-one!")
+    """
 
     if channel.name not in channels:
         return
 
-    author = ctx.author
     guild = ctx.guild
     text = ""
 
-    for user in mentions:
-        userid = userIDFromMention(user)
-        try:
-            hugs = db.getUserHugLinks(str(author.id), str(userid), str(guild.id))[0][0]
-        except IndexError:
-            await ctx.send(f"No hugs given to <@{userid}>.")
-            return
+    try:
+        hugs = db.getUserHugLinks(str(user1.id), str(user2.id), str(guild.id))[0][0]
+    except IndexError:
+        await ctx.response.send_message(f"No hugs given to {user2.mention}.")
+        return
 
-        if hugs is None:
-            hugs = "no hugs"
-        elif hugs == 1:
-            hugs = "1 hug"
-        else:
-            hugs = f"{hugs} hugs"
+    if hugs is None:
+        hugs = "no hugs"
+    elif hugs == 1:
+        hugs = "1 hug"
+    else:
+        hugs = f"{hugs} hugs"
 
-        text += f"<@{author.id}> has given {user} {hugs}!\n"
+    text += f"{user1.mention} has given {user2.mention} {hugs}!\n"
 
-    await ctx.send(text)
+    await ctx.response.send_message(text)
 
 
 def setup(bot):
@@ -195,5 +194,8 @@ def setup(bot):
 
     print("Counting intew hugs to evewyone >,> ...")
     tree.add_command(hugsto)
+    
+    print("Counting hugs between evewyone >,> ...")
+    tree.add_command(hugsbetween)
     
     return tree
