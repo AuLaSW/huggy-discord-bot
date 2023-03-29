@@ -23,12 +23,11 @@ def class_setup(self, bot):
 
 
 class GiveCommands(app_commands.Group):
-    name = "give"
-
     def __init__(self, bot):
         super().__init__()
         class_setup(self, bot)
         self._hugs_visual = list(Path('./content/').glob('*.mp4'))
+        self.name = "give"
 
     @app_commands.command(
         name="hug",
@@ -75,11 +74,10 @@ class GiveCommands(app_commands.Group):
 
 
 class GetCommands(app_commands.Group):
-    name = "get"
-
     def __init__(self, bot):
         super().__init__()
         class_setup(self, bot)
+        self.name = "get"
 
     @app_commands.command(
         name="hugboard",
