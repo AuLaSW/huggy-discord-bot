@@ -9,18 +9,21 @@ the commands to the bot.
 """
 import random
 from pathlib import Path
-from discord.ext import commands
+#from discord.ext import commands
+from discord import app_commands
 import discord
 from datetime import datetime, timezone
 from utils import *
 
-
+"""
 @commands.command(
     brief="Add a hug to @'d",
     description="Add a hug to all @'d members",
     usage="mentions: All @'s after the command"
 )
-async def hug(ctx, *mentions):
+"""
+@app_commands.command()
+async def hug(ctx: discord.Interaction, mentions: discord.User):
     channel = ctx.channel
 
     if channel.name not in channels:
@@ -79,12 +82,14 @@ async def hug(ctx, *mentions):
             file=file
         )
 
-
+"""
 @commands.command(
     brief="leaderboard of all hugs",
     description="A leaderboard of all hugs given in the server",
 )
-async def hugboard(ctx):
+"""
+@app_commands.command()
+async def hugboard(ctx: discord.Interaction):
     channel = ctx.channel
     guild = ctx.guild
 
@@ -112,13 +117,15 @@ async def hugboard(ctx):
 
     await ctx.send(text)
 
-
+"""
 @commands.command(
     brief="hugs of @'d users from author",
     description="Gets the hugs of @'d users from author",
     usage="mentions: all users to check for hugs from author"
 )
-async def hugsto(ctx, *mentions):
+"""
+@app_commands.command()
+async def hugsto(ctx: discord.Interaction, mentions: discord.User):
     channel = ctx.channel
 
     if len(mentions) == 0:
@@ -154,6 +161,8 @@ async def hugsto(ctx, *mentions):
 def setup(bot):
     """Attaches commands to the incoming bot."""
     print("Adding hugs...")
+    
+    tree = bot.tree
 
     print("Listening to channels...")
     global channels
@@ -173,10 +182,12 @@ def setup(bot):
     global db
     db = bot.db
 
-    bot.add_command(hug)
+    tree.add_command(hug)
 
     print("Counting the hugs...")
-    bot.add_command(hugboard)
+    tree.add_command(hugboard)
 
     print("Counting intew hugs to evewyone >,> ...")
-    bot.add_command(hugsto)
+    tree.add_command(hugsto)
+    
+    return tree

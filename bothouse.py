@@ -16,5 +16,6 @@ class Botty2_0(Bot):
     """
     async def on_ready(self):
         print('Initiawizing the commands, uwu...')
-        setup(self)
+        tree = setup(self)
+        await tree.sync()
         print(f'{self.user.name} is weady for hot-bot-summew! >_<')
