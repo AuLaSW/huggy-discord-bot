@@ -16,17 +16,19 @@ from datetime import datetime, timezone
 from utils import *
 
 
-class GeneralCommands(app_commands.Group):
+def class_setup(self, bot):
+    self._bot = bot
+    self._db = bot.db
+    self._channels = [ "bot-commands" ]
+
+
+class GiveCommands(app_commands.Group):
+    name = "give"
+
     def __init__(self, bot):
         super().__init__()
-        self._bot = bot
-        self._db = bot.db
+        class_setup(self, bot)
         self._hugs_visual = list(Path('./content/').glob('*.mp4'))
-        self._channels = [ "bot-commands" ]
-        self.name = "general"
-
-    def setup(self):
-        pass
 
     @app_commands.command(
         name="hug",
@@ -72,6 +74,13 @@ class GeneralCommands(app_commands.Group):
             )
 
 
+class GetCommands(app_commands.Group):
+    name = "get"
+
+    def __init__(self, bot):
+        super().__init__()
+        class_setup(self, bot)
+
     @app_commands.command(
         name="hugboard",
         description="The leaderboard of hugs."
@@ -103,7 +112,6 @@ class GeneralCommands(app_commands.Group):
             text += line
 
         await ctx.response.send_message(text)
-
 
     @app_commands.command(
         name="hugsto",
@@ -146,4 +154,5 @@ class GeneralCommands(app_commands.Group):
 
 def setup(bot):
     """Attaches commands to the incoming bot."""
-    bot.tree.add_command(GeneralCommands(bot))
+    bot.tree.add_command(GiveCommands(bot))
+    bot.tree.add_command(GetCommands(bot))
