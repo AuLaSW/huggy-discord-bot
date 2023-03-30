@@ -118,14 +118,14 @@ class HugDatabase:
         inputs = [guildid]
         cur = self._connection.cursor()
 
-        query = f"""
+        query = """
             SELECT huggivento, COUNT(huggivento) AS hug_count FROM hugs
-            WHERE guildid LIKE {guildid}
+            WHERE guildid LIKE ?
             GROUP BY huggivento
-            ORDER BY hug_count;
+            ORDER BY hug_count DESC;
             """
 
-        cur.execute(query)
+        cur.execute(query, inputs)
 
         return cur.fetchall()
 
