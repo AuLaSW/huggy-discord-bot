@@ -119,9 +119,10 @@ class HugDatabase:
         cur = self._connection.cursor()
 
         query = f"""
-            SELECT huggivento, COUNT(huggivento) FROM hugs
+            SELECT huggivento, COUNT(huggivento) AS hug_count FROM hugs
             WHERE guildid LIKE {guildid}
-            GROUP BY huggivento;
+            GROUP BY huggivento
+            ORDER BY hug_count;
             """
 
         cur.execute(query)
