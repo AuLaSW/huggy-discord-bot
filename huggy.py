@@ -15,6 +15,7 @@ def main():
 
     intentdict = {}
     intentdict["message_content"] = True
+    intentdict["members"] = True
     intents = getIntents("default", **intentdict)
 
     db = HugDatabase()

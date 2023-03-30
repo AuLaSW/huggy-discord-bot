@@ -98,15 +98,17 @@ class GetCommands(app_commands.Group):
             return
 
         for entry in table:
+            user_id = guild.get_member(int(entry[0])).name
+            user_id = user_id.partition("#")[0]
             if entry[1] == 0:
-                line = f'<@{entry[0]}> has no hugs! (free hug on me) :(\n'
+                line = f'{user_id} has no hugs! (free hug on me) :(\n'
 
                 date = datetime.now(timezone.utc).timestamp()
                 self._db.addHug(None, str(guild.id), str(date), str(entry[0]))
             elif entry[1] == 1:
-                line = f'<@{entry[0]}> has 1 hug! :)\n'
+                line = f'{user_id} has 1 hug! :)\n'
             else:
-                line = f'<@{entry[0]}> has {entry[1]} hugs! Wow! :O\n'
+                line = f'{user_id} has {entry[1]} hugs! Wow! :O\n'
             text += line
 
         await ctx.response.send_message(text)
